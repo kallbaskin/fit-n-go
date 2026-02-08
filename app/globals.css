@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  font-size: 18px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 19px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 20px;
+  }
+}
+
+
+:root {
+  --bg: 255 255 255;
+  --fg: 17 24 39;
+  --accent: 132 204 22; /* lime-500 */
+}
+
+body {
+  color: rgb(var(--fg));
+  background: rgb(var(--bg));
+}
+
+@layer components {
+  .btn-primary {
+    @apply rounded-2xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-lg;
+  }
+  .btn-secondary {
+    @apply rounded-2xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md;
+  }
+  .card {
+    @apply rounded-3xl border border-gray-100 bg-white p-6 shadow-soft;
+  }
+}
