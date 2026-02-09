@@ -85,6 +85,20 @@ export default function Page() {
     () => "В среднем −6 кг и −8 см за месяц (по статистике клиентов).",
     []
   );
+function goHomeFromQuiz() {
+  setQuizOpen(false);
+  setQuizStatus("idle");
+  setQuizError("");
+  setQuizStep(1);
+  setQuiz({ goal: "", schedule: "", level: "", phone: "", note: "", company: "" });
+
+  // плавно на верх страницы/секции #top
+  if (typeof window !== "undefined") {
+    window.location.hash = "#top";
+    const el = document.getElementById("top");
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
 
   // мягкое авто-предложение квиза один раз за сессию
   useEffect(() => {
@@ -170,8 +184,6 @@ export default function Page() {
       }
 
       setQuizStatus("ok");
-      setQuizStep(1);
-      setQuiz({ goal: "", schedule: "", level: "", phone: "", note: "", company: "" });
     } catch {
       setQuizStatus("error");
       setQuizError("Сеть недоступна. Попробуйте ещё раз или позвоните.");
@@ -184,7 +196,15 @@ export default function Page() {
       <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
           <a href="#top" className="flex items-center gap-3">
-            <Image src="/logo.png" alt="Fit N Go" width={120} height={40} className="h-9 w-auto" priority />
+            <Image
+  src="/logo.png"
+  alt="Fit N Go"
+  width={240}
+  height={80}
+  className="h-16 w-auto"
+  priority
+/>
+
             <div className="hidden leading-tight md:block">
               <div className="text-sm font-semibold">Fit N Go</div>
               <div className="text-xs text-gray-500">EMS • Коммунарка</div>
@@ -205,7 +225,7 @@ export default function Page() {
               onClick={() => setQuizOpen(true)}
               className="hidden rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:inline-block"
             >
-              🧩 Пройти квиз
+              🧩 Попробовать
             </button>
             <a
               href={`tel:${PHONE_TEL}`}
@@ -238,7 +258,7 @@ export default function Page() {
         >
           <motion.div variants={item} className="flex flex-wrap gap-2">
             <Badge icon="⏱">20 минут тренировка</Badge>
-            <Badge icon="👩‍⚕️">Тренер 1:1</Badge>
+            <Badge icon="👩‍⚕️">Личный тренер</Badge>
             <Badge icon="🧘">Без нагрузки на суставы</Badge>
             <Badge icon="🧒">Можно с детьми</Badge>
           </motion.div>
@@ -256,7 +276,7 @@ export default function Page() {
           <motion.div variants={item} className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <a href="#signup" className="btn-primary text-center">Записаться на пробную</a>
             <button type="button" onClick={() => setQuizOpen(true)} className="btn-secondary text-center">
-              🧩 Пройти квиз (1 мин)
+              🧩 Подобрать удобное время
             </button>
             <a href={`tel:${PHONE_TEL}`} className="text-center text-sm font-semibold text-gray-900 underline underline-offset-4 sm:ml-2">
               Позвонить: {PHONE_DISPLAY}
@@ -289,13 +309,13 @@ export default function Page() {
       <section className="mx-auto max-w-6xl px-4 py-14 md:px-6">
         <SectionTitle
           kicker="ЦИФРЫ И ЭФФЕКТ"
-          title="Понятные цифры — без воды"
-          desc="Покажем динамику по замерам и анализу состава тела — чтобы результат был виден не только в зеркале."
+          title="Покажем динамику по замерам и анализу состава тела"
+          desc=""
         />
 
         <div className="mt-10 grid gap-5 lg:grid-cols-4">
-          <StatCard icon="⚡" value="20 мин" label="длится тренировка" />
-          <StatCard icon="⏳" value="2–3 ч" label="заменяет по эффективности" />
+          <StatCard icon="⚡" value="20 мин" label="тренировка занимает всего 20 мин" />
+          <StatCard icon="⏳" value="2–3 ч" label="EMS-тренировки заменят 2-3 часа интенсивной тренировки в зале" />
           <StatCard icon="📉" value="−6 кг" label="в среднем за месяц" />
           <StatCard icon="📏" value="−8 см" label="по объёмам за месяц" />
         </div>
@@ -315,8 +335,8 @@ export default function Page() {
 
             <ul className="mt-5 space-y-3 text-sm text-gray-700">
               <li className="flex gap-3"><span className="text-xl">✅</span><span>Без лишней нагрузки на суставы</span></li>
-              <li className="flex gap-3"><span className="text-xl">✅</span><span>Персонально: тренер 1:1</span></li>
-              <li className="flex gap-3"><span className="text-xl">✅</span><span>Контроль прогресса по цифрам</span></li>
+              <li className="flex gap-3"><span className="text-xl">✅</span><span>Персональный тренер</span></li>
+              <li className="flex gap-3"><span className="text-xl">✅</span><span>Контроль прогресса по замерам</span></li>
             </ul>
           </div>
 
@@ -337,9 +357,9 @@ export default function Page() {
         <SectionTitle
           kicker="ПОЧЕМУ FIT N GO"
           title="Быстро, персонально и с ощутимым эффектом"
-          desc="Здесь нет толпы и посторонних взглядов — тренировка проходит в персональном зале с тренером 1:1."
+          desc="Здесь нет толпы и посторонних взглядов — тренировка проходит в персональном зале с тренером."
         />
-
+1
         <motion.div
           variants={container}
           initial="hidden"
@@ -348,10 +368,10 @@ export default function Page() {
           className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
         >
           {[
-            ["⏱", "20 минут вместо 2–3 часов", "Идеально для занятых: максимум эффекта за короткое время."],
+            ["⏱", "20 минут вместо 2–3 часов в обычном зале", "Идеально для занятых: максимум эффекта за короткое время."],
             ["🦵", "Без нагрузки на суставы", "Подходит тем, кому сложно бегать/прыгать/поднимать большие веса."],
             ["🧍‍♀️", "Осанка и спина", "Укрепляем мышцы-стабилизаторы, снижаем дискомфорт."],
-            ["👩‍⚕️", "Тренер 1:1", "Интенсивность и программа подбираются под цель и уровень."],
+            ["👩‍⚕️", "Личный тренер", "Интенсивность и программа подбираются под цель и уровень."],
             ["📊", "Контроль динамики", "Карточка клиента + анализ состава тела и замеры до/после."],
             ["💆‍♀️", "Лимфодренаж + питание", "После тренировки — массаж + рекомендации по питанию."],
           ].map(([ic, t, d]) => (
@@ -370,9 +390,9 @@ export default function Page() {
         <div className="mt-10 rounded-3xl border border-gray-100 bg-gray-900 p-6 shadow-soft md:p-8">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <div className="text-sm font-semibold text-white">Спец-условие на пробную</div>
+              <div className="text-sm font-semibold text-white">Специальное условие на пробную тренировку</div>
               <div className="mt-1 text-sm text-white/80">
-                Пробная — 990 ₽. <b>Бесплатно</b> при покупке абонемента в день пробного занятия.
+                Пробная тренировка — <b>990 ₽</b>. <b>Бесплатно</b> при покупке абонемента в день пробного занятия.
               </div>
             </div>
             <button
@@ -380,7 +400,7 @@ export default function Page() {
               onClick={() => setQuizOpen(true)}
               className="rounded-2xl bg-white px-6 py-3 text-center text-sm font-semibold text-gray-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-lg"
             >
-              🧩 Пройти квиз
+              🧩 Записаться
             </button>
           </div>
         </div>
@@ -391,8 +411,8 @@ export default function Page() {
         <div className="mx-auto max-w-6xl px-4 py-14 md:px-6">
           <SectionTitle
             kicker="КАК ПРОХОДИТ"
-            title="4 шага — и ты понимаешь, что делать дальше"
-            desc="Мы ведём по понятному сценарию и фиксируем прогресс — чтобы результат был закономерным."
+            title="Как проходит тренировка"
+            desc="Мы ведём по понятному сценарию и фиксируем прогресс — чтобы достить максимального результата."
           />
 
           <motion.ol
@@ -431,7 +451,7 @@ export default function Page() {
                 <div>
                   <div className="text-base font-semibold text-gray-900">Не нужно покупать абонемент “вслепую”</div>
                   <div className="mt-1 text-sm text-gray-600">
-                    Пробная тренировка помогает почувствовать эффект уже на следующий день — решение становится простым.
+                    Пробная тренировка помогает почувствовать эффект уже на следующий день.
                   </div>
                 </div>
               </div>
@@ -448,7 +468,7 @@ export default function Page() {
         <SectionTitle
           kicker="ЦЕНЫ"
           title="Стоимость и бонусы"
-          desc="1 тренировка: 2500–3500 ₽ (в зависимости от абонемента). Есть рассрочка 0% и возможность налогового вычета."
+          desc="Персональная тренировка: 2500–3500 ₽ (в зависимости от абонемента). Есть рассрочка 0% и возможность налогового вычета."
         />
 
         <motion.div
@@ -460,7 +480,7 @@ export default function Page() {
         >
           <motion.div variants={item} className="card">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold text-gray-900">Пробная</div>
+              <div className="text-sm font-semibold text-gray-900">Пробная тренировка</div>
               <div className="text-3xl">🎁</div>
             </div>
             <div className="mt-2 text-3xl font-semibold text-gray-900">990 ₽</div>
@@ -468,13 +488,13 @@ export default function Page() {
               Бесплатно при покупке абонемента в день пробного занятия.
             </div>
             <button type="button" onClick={() => setQuizOpen(true)} className="btn-primary mt-6 inline-block w-full text-center">
-              🧩 Пройти квиз
+              🧩 Записаться
             </button>
           </motion.div>
 
           <motion.div variants={item} className="card">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold text-gray-900">Абонементы</div>
+              <div className="text-sm font-semibold text-gray-900">Стоимость тренировки в абонементе</div>
               <div className="text-3xl">💳</div>
             </div>
             <div className="mt-2 text-3xl font-semibold text-gray-900">2500–3500 ₽</div>
@@ -485,7 +505,7 @@ export default function Page() {
               <li className="flex gap-2"><span className="text-xl">✅</span><span>Дневное посещение: 10%</span></li>
               <li className="flex gap-2"><span className="text-xl">✅</span><span>Возможен налоговый вычет</span></li>
             </ul>
-            <a href="#signup" className="btn-secondary mt-6 inline-block w-full text-center">Подобрать пакет</a>
+            <a href="#signup" className="btn-secondary mt-6 inline-block w-full text-center">Подобрать абонемент</a>
           </motion.div>
 
           <motion.div variants={item} className="card">
@@ -513,7 +533,7 @@ export default function Page() {
           <SectionTitle
             kicker="КОМФОРТ"
             title="Студия, куда хочется возвращаться"
-            desc="Отдельная раздевалка с душем и всем необходимым. Бесплатные напитки. Кроссовки можно оставлять на хранение."
+            desc="Отдельная раздевалка с душем и всем необходимым. Бесплатные напитки. Спортувную форму можно оставлять на хранение."
           />
 
           <motion.div
@@ -550,7 +570,7 @@ export default function Page() {
                 <div>
                   <div className="text-base font-semibold text-gray-900">Всё включено</div>
                   <div className="mt-2 text-sm text-gray-600">
-                    Полотенца, гигиена, вода/чай/кофе — и отдельная раздевалка с душем.
+                    Полотенца, гигиенические средства, вода/чай/кофе — и отдельная раздевалка с душем.
                   </div>
                 </div>
               </div>
@@ -564,7 +584,7 @@ export default function Page() {
                 <div>
                   <div className="text-base font-semibold text-gray-900">Адрес</div>
                   <div className="mt-1 text-sm text-gray-600">
-                    Москва, НАО, район Коммунарка, бульвар Веласкеса, 4
+                    Москва, район Коммунарка, бульвар Веласкеса, 4
                   </div>
                 </div>
               </div>
@@ -590,7 +610,7 @@ export default function Page() {
                 Запишись на пробную EMS-тренировку
               </h2>
               <p className="mt-3 text-base text-white/80 md:text-lg">
-                Ощути качество уже на следующий день. Если решишь купить абонемент в день пробной — пробная будет бесплатной.
+                Ощути эффект уже на следующий день. Если решишь купить абонемент в день пробной — пробная будет бесплатной.
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -605,7 +625,7 @@ export default function Page() {
                   onClick={() => setQuizOpen(true)}
                   className="rounded-2xl border border-white/20 bg-white/10 px-6 py-3 text-center text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-white/15"
                 >
-                  🧩 Пройти квиз
+                  🧩 Записаться
                 </button>
               </div>
 
@@ -617,7 +637,7 @@ export default function Page() {
             <div className="rounded-3xl bg-white p-6 shadow-soft md:p-8">
               <div className="text-base font-semibold text-gray-900">Форма записи</div>
               <p className="mt-2 text-sm text-gray-600">
-                Оставь контакт — мы перезвоним и подберём удобное время.
+                Оставьте контакт — мы свяжемся и подберём удобное время.
               </p>
 
               <form onSubmit={submit} className="mt-5 space-y-4">
@@ -695,7 +715,7 @@ export default function Page() {
             <div>© {new Date().getFullYear()} Fit N Go — EMS тренировки (Коммунарка)</div>
             <div className="flex gap-4">
               <button type="button" onClick={() => setQuizOpen(true)} className="hover:text-gray-900">
-                🧩 Квиз
+                🧩 Записаться на пробную тренировку
               </button>
               <a className="hover:text-gray-900" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>
               <a className="hover:text-gray-900" href="#signup">Запись</a>
@@ -711,14 +731,14 @@ export default function Page() {
         className="fixed bottom-24 right-4 z-50 hidden rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md md:inline-flex items-center gap-2"
       >
         <span className="text-xl">🧩</span>
-        Пройти квиз
+        Записатья онлайн
       </button>
 
       {/* Mobile sticky CTA */}
       <div className="fixed bottom-3 left-0 right-0 z-50 px-3 md:hidden">
         <div className="mx-auto flex max-w-md gap-3 rounded-3xl border border-gray-200 bg-white/90 p-3 shadow-soft backdrop-blur">
           <button type="button" onClick={() => setQuizOpen(true)} className="btn-secondary w-1/2 text-center">
-            🧩 Квиз
+            🧩 Записаться онлайн
           </button>
           <a href="#signup" className="btn-primary w-1/2 text-center">Записаться</a>
         </div>
@@ -746,13 +766,13 @@ export default function Page() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="text-xs font-semibold tracking-widest text-gray-500">
-                    🧩 КВИЗ • 1 МИНУТА
+                    🧩 Записаться на пробную тренировку
                   </div>
                   <div className="mt-2 text-xl font-semibold text-gray-900 md:text-2xl">
                     Подберём программу и время
                   </div>
                   <div className="mt-1 text-sm text-gray-600">
-                    Ответь на 3 вопроса — и мы перезвоним с лучшим вариантом.
+                    Ответьте на 3 вопроса — и мы подберем удобную для вас запись.
                   </div>
                 </div>
                 <button
@@ -772,7 +792,7 @@ export default function Page() {
               <div className="mt-6">
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span>Шаг {quizStep} из 4</span>
-                  <span>Без спама</span>
+                  <span>100%</span>
                 </div>
                 <div className="mt-2 h-2 w-full rounded-full bg-gray-100">
                   <div
@@ -807,7 +827,7 @@ export default function Page() {
                         "Похудеть и убрать объёмы",
                         "Подтянуть тело и тонус",
                         "Спина/осанка, укрепить кор",
-                        "После родов — быстро прийти в форму",
+                        "Восстановление после родов — быстро прийти в форму",
                       ].map((v) => (
                         <button
                           key={v}
@@ -832,7 +852,7 @@ export default function Page() {
                       2) Когда удобнее тренироваться? <span className="text-xl">🗓️</span>
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
-                      {["Утро (до 12:00)", "День (12:00–17:00)", "Вечер (после 17:00)", "Плавающий график"].map((v) => (
+                      {["Утро (до 12:00)", "День (12:00–17:00)", "Вечер (после 17:00)", "Любое время"].map((v) => (
                         <button
                           key={v}
                           type="button"
@@ -882,7 +902,7 @@ export default function Page() {
                         value={quiz.note}
                         onChange={(e) => setQuiz({ ...quiz, note: e.target.value })}
                         className="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-gray-400"
-                        placeholder="Например: цель −5 кг / после родов / болит спина"
+                        placeholder="Например: цель −5 кг / восстановление после родов / болит спина"
                       />
                     </label>
                   </div>
@@ -892,8 +912,8 @@ export default function Page() {
                 {quizStep === 4 ? (
                   <div className="space-y-4">
                     <div className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-700">
-                      <div className="font-semibold text-gray-900">Готово! Остался контакт ☎️</div>
-                      <div className="mt-1">Мы перезвоним и предложим удобное время пробной.</div>
+                      <div className="font-semibold text-gray-900">Готово! Оставьте номер телефона ☎️</div>
+                      <div className="mt-1">Мы свяжемся с вами и предложим удобное время для пробной тренировки.</div>
                       <div className="mt-3 text-xs text-gray-600">
                         • Цель: {quiz.goal || "-"} <br />
                         • График: {quiz.schedule || "-"} <br />
@@ -913,7 +933,7 @@ export default function Page() {
                     </label>
 
                     <button type="submit" className="btn-primary w-full" disabled={quizStatus === "sending"}>
-                      {quizStatus === "sending" ? "Отправляем..." : "Получить подбор"}
+                      {quizStatus === "sending" ? "Отправляем..." : "Оставить заявку"}
                     </button>
 
                     {quizStatus === "ok" ? (
