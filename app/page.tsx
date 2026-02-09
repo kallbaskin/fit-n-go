@@ -120,7 +120,7 @@ function goHomeFromQuiz() {
     setError("");
 
     try {
-      const res = await fetch("/api/lead", {
+      const res = await fetch("/.netlify/functions/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -161,7 +161,7 @@ function goHomeFromQuiz() {
         .filter(Boolean)
         .join("\n");
 
-      const res = await fetch("/api/lead", {
+      const res = await fetch("/.netlify/functions/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
