@@ -1,16 +1,22 @@
 import { Resend } from "resend";
 
-export default async (req) => {
+export default async (request) => {
   try {
-    if (req.method !== "POST") {
-      return { statusCode: 405, body: JSON.stringify({ ok: false, error: "Method not allowed" }) };
+    if (request.method !== "POST") {
+      return new Response(JSON.stringify({ ok: false, error: "Method not allowed" }), {
+        status: 405,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
     }
 
-    const body = JSON.parse(req.body || "{}");
+    const body = await request.json().catch(() => ({}));
 
     // анти-бот поле (honeypot)
     if (body.company) {
-      return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
     }
 
     const name = String(body.name || "").trim();
@@ -18,7 +24,10 @@ export default async (req) => {
     const message = String(body.message || "").trim();
 
     if (!phone) {
-      return { statusCode: 400, body: JSON.stringify({ ok: false, error: "Телефон обязателен" }) };
+      return new Response(JSON.stringify({ ok: false, error: "Телефон обязателен" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
     }
 
     const resendKey = process.env.RESEND_API_KEY;
@@ -26,13 +35,16 @@ export default async (req) => {
     const fromEmail = process.env.LEADS_FROM_EMAIL; // должен быть на домене fitngo-kommunarka.ru
 
     if (!resendKey || !toEmail || !fromEmail) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
+      return new Response(
+        JSON.stringify({
           ok: false,
           error: "Не настроены переменные окружения: RESEND_API_KEY / LEADS_TO_EMAIL / LEADS_FROM_EMAIL",
         }),
-      };
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+        }
+      );
     }
 
     const resend = new Resend(resendKey);
@@ -54,11 +66,20 @@ export default async (req) => {
     });
 
     if (error) {
-      return { statusCode: 500, body: JSON.stringify({ ok: false, error }) };
+      return new Response(JSON.stringify({ ok: false, error }), {
+        status: 500,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
     }
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true, id: data?.id }) };
+    return new Response(JSON.stringify({ ok: true, id: data?.id }), {
+      status: 200,
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+    });
   } catch (e) {
-    return { statusCode: 500, body: JSON.stringify({ ok: false, error: e?.message || String(e) }) };
+    return new Response(JSON.stringify({ ok: false, error: e?.message || String(e) }), {
+      status: 500,
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+    });
   }
 };
