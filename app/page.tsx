@@ -669,7 +669,7 @@ export default function Page() {
               </div>
 
               <div className="mt-6 text-sm text-white/70">
-                Адрес: Москва, НАО, район Коммунарка, бульвар Веласкеса, 4
+                Адрес: Москва, район Коммунарка, бульвар Веласкеса, 4
               </div>
             </div>
 
