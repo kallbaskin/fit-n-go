@@ -1,19 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
 const PHONE_DISPLAY = "+7-977-778-08-25";
 const PHONE_TEL = "+79777780825";
 
-const container = {
+const container: Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
-const item = {
+
+const item: Variants = {
   hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] }, // ✅ типобезопасно
+  },
 };
 
 function Badge({ icon, children }: { icon: string; children: React.ReactNode }) {
@@ -47,12 +52,22 @@ function SectionTitle({
   );
 }
 
-function StatCard({ value, label, icon }: { value: string; label: string; icon: string }) {
+function StatCard({
+  value,
+  label,
+  icon,
+}: {
+  value: string;
+  label: string;
+  icon: string;
+}) {
   return (
     <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-soft">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl">{value}</div>
+          <div className="text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl">
+            {value}
+          </div>
           <div className="mt-2 text-sm text-gray-600">{label}</div>
         </div>
         <div className="text-3xl">{icon}</div>
@@ -85,20 +100,23 @@ export default function Page() {
     () => "В среднем −6 кг и −8 см за месяц (по статистике клиентов).",
     []
   );
-function goHomeFromQuiz() {
-  setQuizOpen(false);
-  setQuizStatus("idle");
-  setQuizError("");
-  setQuizStep(1);
-  setQuiz({ goal: "", schedule: "", level: "", phone: "", note: "", company: "" });
 
-  // плавно на верх страницы/секции #top
-  if (typeof window !== "undefined") {
-    window.location.hash = "#top";
-    const el = document.getElementById("top");
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  function resetQuiz() {
+    setQuizOpen(false);
+    setQuizStatus("idle");
+    setQuizError("");
+    setQuizStep(1);
+    setQuiz({ goal: "", schedule: "", level: "", phone: "", note: "", company: "" });
   }
-}
+
+  function goHomeFromQuiz() {
+    resetQuiz();
+    if (typeof window !== "undefined") {
+      window.location.hash = "#top";
+      const el = document.getElementById("top");
+      el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
 
   // мягкое авто-предложение квиза один раз за сессию
   useEffect(() => {
@@ -126,7 +144,7 @@ function goHomeFromQuiz() {
         body: JSON.stringify(form),
       });
 
-      const data = await res.json().catch(() => ({}));
+      const data = await res.json().catch(() => ({} as any));
       if (!res.ok || !data?.ok) {
         setStatus("error");
         const err =
@@ -172,7 +190,7 @@ function goHomeFromQuiz() {
         }),
       });
 
-      const data = await res.json().catch(() => ({}));
+      const data = await res.json().catch(() => ({} as any));
       if (!res.ok || !data?.ok) {
         setQuizStatus("error");
         const err =
@@ -190,6 +208,8 @@ function goHomeFromQuiz() {
     }
   }
 
+  const quizProgress = Math.round((quizStep / 4) * 100);
+
   return (
     <main className="min-h-screen bg-white">
       {/* Sticky header */}
@@ -197,14 +217,13 @@ function goHomeFromQuiz() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
           <a href="#top" className="flex items-center gap-3">
             <Image
-  src="/logo.png"
-  alt="Fit N Go"
-  width={240}
-  height={80}
-  className="h-16 w-auto"
-  priority
-/>
-
+              src="/logo.png"
+              alt="Fit N Go"
+              width={240}
+              height={80}
+              className="h-16 w-auto"
+              priority
+            />
             <div className="hidden leading-tight md:block">
               <div className="text-sm font-semibold">Fit N Go</div>
               <div className="text-xs text-gray-500">EMS • Коммунарка</div>
@@ -212,11 +231,21 @@ function goHomeFromQuiz() {
           </a>
 
           <nav className="hidden items-center gap-6 text-sm text-gray-700 md:flex">
-            <a className="hover:text-gray-900" href="#benefits">Преимущества</a>
-            <a className="hover:text-gray-900" href="#how">Как проходит</a>
-            <a className="hover:text-gray-900" href="#prices">Цены</a>
-            <a className="hover:text-gray-900" href="#studio">Студия</a>
-            <a className="hover:text-gray-900" href="#signup">Запись</a>
+            <a className="hover:text-gray-900" href="#benefits">
+              Преимущества
+            </a>
+            <a className="hover:text-gray-900" href="#how">
+              Как проходит
+            </a>
+            <a className="hover:text-gray-900" href="#prices">
+              Цены
+            </a>
+            <a className="hover:text-gray-900" href="#studio">
+              Студия
+            </a>
+            <a className="hover:text-gray-900" href="#signup">
+              Запись
+            </a>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -263,7 +292,10 @@ function goHomeFromQuiz() {
             <Badge icon="🧒">Можно с детьми</Badge>
           </motion.div>
 
-          <motion.h1 variants={item} className="mt-6 max-w-3xl text-3xl font-semibold tracking-tight text-gray-900 md:text-6xl">
+          <motion.h1
+            variants={item}
+            className="mt-6 max-w-3xl text-3xl font-semibold tracking-tight text-gray-900 md:text-6xl"
+          >
             EMS-тренировки:{" "}
             <span className="underline decoration-lime-500/30">20 минут</span> по эффективности как 2–3 часа в зале
           </motion.h1>
@@ -274,16 +306,20 @@ function goHomeFromQuiz() {
           </motion.p>
 
           <motion.div variants={item} className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <a href="#signup" className="btn-primary text-center">Записаться на пробную</a>
+            <a href="#signup" className="btn-primary text-center">
+              Записаться на пробную
+            </a>
             <button type="button" onClick={() => setQuizOpen(true)} className="btn-secondary text-center">
               🧩 Подобрать удобное время
             </button>
-            <a href={`tel:${PHONE_TEL}`} className="text-center text-sm font-semibold text-gray-900 underline underline-offset-4 sm:ml-2">
+            <a
+              href={`tel:${PHONE_TEL}`}
+              className="text-center text-sm font-semibold text-gray-900 underline underline-offset-4 sm:ml-2"
+            >
               Позвонить: {PHONE_DISPLAY}
             </a>
           </motion.div>
 
-          {/* Визуальные мини-плитки (инфографика/факты) */}
           <motion.div variants={item} className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: "✨", t: "Результат", d: "Первые изменения часто после 4–6 тренировок" },
@@ -305,7 +341,7 @@ function goHomeFromQuiz() {
         </motion.div>
       </section>
 
-      {/* Stats / Big infographic */}
+      {/* Stats */}
       <section className="mx-auto max-w-6xl px-4 py-14 md:px-6">
         <SectionTitle
           kicker="ЦИФРЫ И ЭФФЕКТ"
@@ -334,20 +370,23 @@ function goHomeFromQuiz() {
             </div>
 
             <ul className="mt-5 space-y-3 text-sm text-gray-700">
-              <li className="flex gap-3"><span className="text-xl">✅</span><span>Без лишней нагрузки на суставы</span></li>
-              <li className="flex gap-3"><span className="text-xl">✅</span><span>Персональный тренер</span></li>
-              <li className="flex gap-3"><span className="text-xl">✅</span><span>Контроль прогресса по замерам</span></li>
+              <li className="flex gap-3">
+                <span className="text-xl">✅</span>
+                <span>Без лишней нагрузки на суставы</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-xl">✅</span>
+                <span>Персональный тренер</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-xl">✅</span>
+                <span>Контроль прогресса по замерам</span>
+              </li>
             </ul>
           </div>
 
-          {/* картинка-инфографика */}
           <div className="relative aspect-[16/10] overflow-hidden rounded-3xl shadow-soft">
-            <Image
-              src="/images/infographic-20min.png"
-              alt="Инфографика 20 минут"
-              fill
-              className="object-cover"
-            />
+            <Image src="/images/infographic-20min.png" alt="Инфографика 20 минут" fill className="object-cover" />
           </div>
         </div>
       </section>
@@ -359,7 +398,7 @@ function goHomeFromQuiz() {
           title="Быстро, персонально и с ощутимым эффектом"
           desc="Здесь нет толпы и посторонних взглядов — тренировка проходит в персональном зале с тренером."
         />
-1
+
         <motion.div
           variants={container}
           initial="hidden"
@@ -406,13 +445,13 @@ function goHomeFromQuiz() {
         </div>
       </section>
 
-      {/* How (with more visual/infographic) */}
+      {/* How */}
       <section id="how" className="bg-gray-50/60">
         <div className="mx-auto max-w-6xl px-4 py-14 md:px-6">
           <SectionTitle
             kicker="КАК ПРОХОДИТ"
             title="Как проходит тренировка"
-            desc="Мы ведём по понятному сценарию и фиксируем прогресс — чтобы достить максимального результата."
+            desc="Мы ведём по понятному сценарию и фиксируем прогресс — чтобы достичь максимального результата."
           />
 
           <motion.ol
@@ -533,7 +572,7 @@ function goHomeFromQuiz() {
           <SectionTitle
             kicker="КОМФОРТ"
             title="Студия, куда хочется возвращаться"
-            desc="Отдельная раздевалка с душем и всем необходимым. Бесплатные напитки. Спортувную форму можно оставлять на хранение."
+            desc="Отдельная раздевалка с душем и всем необходимым. Бесплатные напитки. Спортивную форму можно оставлять на хранение."
           />
 
           <motion.div
@@ -589,12 +628,12 @@ function goHomeFromQuiz() {
                 </div>
               </div>
               <a
-                href="https://yandex.ru/profile/-/CLr4rRz-"
+                href="https://yandex.ru/"
                 target="_blank"
                 rel="noreferrer"
                 className="btn-secondary"
               >
-                Открыть в Яндексе
+                Открыть карту
               </a>
             </div>
           </div>
@@ -649,6 +688,7 @@ function goHomeFromQuiz() {
                   tabIndex={-1}
                   autoComplete="off"
                   name="company"
+                  aria-hidden="true"
                 />
 
                 <label className="block">
@@ -669,6 +709,7 @@ function goHomeFromQuiz() {
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     className="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-gray-400"
                     placeholder="+7 ___ ___ __ __"
+                    inputMode="tel"
                   />
                 </label>
 
@@ -717,8 +758,12 @@ function goHomeFromQuiz() {
               <button type="button" onClick={() => setQuizOpen(true)} className="hover:text-gray-900">
                 🧩 Записаться на пробную тренировку
               </button>
-              <a className="hover:text-gray-900" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>
-              <a className="hover:text-gray-900" href="#signup">Запись</a>
+              <a className="hover:text-gray-900" href={`tel:${PHONE_TEL}`}>
+                {PHONE_DISPLAY}
+              </a>
+              <a className="hover:text-gray-900" href="#signup">
+                Запись
+              </a>
             </div>
           </div>
         </div>
@@ -728,10 +773,10 @@ function goHomeFromQuiz() {
       <button
         type="button"
         onClick={() => setQuizOpen(true)}
-        className="fixed bottom-24 right-4 z-50 hidden rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md md:inline-flex items-center gap-2"
+        className="fixed bottom-24 right-4 z-50 hidden items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md md:inline-flex"
       >
         <span className="text-xl">🧩</span>
-        Записатья онлайн
+        Записаться онлайн
       </button>
 
       {/* Mobile sticky CTA */}
@@ -740,26 +785,21 @@ function goHomeFromQuiz() {
           <button type="button" onClick={() => setQuizOpen(true)} className="btn-secondary w-1/2 text-center">
             🧩 Записаться онлайн
           </button>
-          <a href="#signup" className="btn-primary w-1/2 text-center">Записаться</a>
+          <a href="#signup" className="btn-primary w-1/2 text-center">
+            Записаться
+          </a>
         </div>
       </div>
 
       {/* QUIZ MODAL */}
       {quizOpen ? (
         <div className="fixed inset-0 z-[60]">
-          <div
-            className="absolute inset-0 bg-black/55"
-            onClick={() => {
-              setQuizOpen(false);
-              setQuizStatus("idle");
-              setQuizError("");
-            }}
-          />
+          <div className="absolute inset-0 bg-black/55" onClick={resetQuiz} />
           <div className="absolute inset-0 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, y: 16, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }} // ✅ типобезопасно
               className="w-full max-w-xl rounded-3xl bg-white p-6 shadow-soft md:p-8"
               onClick={(e) => e.stopPropagation()}
             >
@@ -778,11 +818,7 @@ function goHomeFromQuiz() {
                 <button
                   type="button"
                   className="rounded-2xl border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-                  onClick={() => {
-                    setQuizOpen(false);
-                    setQuizStatus("idle");
-                    setQuizError("");
-                  }}
+                  onClick={resetQuiz}
                 >
                   ✕
                 </button>
@@ -792,20 +828,17 @@ function goHomeFromQuiz() {
               <div className="mt-6">
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span>Шаг {quizStep} из 4</span>
-                  <span>100%</span>
+                  <span>{quizProgress}%</span>
                 </div>
                 <div className="mt-2 h-2 w-full rounded-full bg-gray-100">
                   <div
                     className="h-2 rounded-full bg-lime-500 transition-all"
-                    style={{ width: `${(quizStep / 4) * 100}%` }}
+                    style={{ width: `${quizProgress}%` }}
                   />
                 </div>
               </div>
 
-              <form
-                onSubmit={quizStep === 4 ? submitQuiz : (e) => e.preventDefault()}
-                className="mt-6"
-              >
+              <form onSubmit={quizStep === 4 ? submitQuiz : (e) => e.preventDefault()} className="mt-6">
                 {/* honeypot */}
                 <input
                   value={quiz.company}
@@ -814,6 +847,7 @@ function goHomeFromQuiz() {
                   tabIndex={-1}
                   autoComplete="off"
                   name="company"
+                  aria-hidden="true"
                 />
 
                 {/* Step 1 */}
@@ -834,7 +868,9 @@ function goHomeFromQuiz() {
                           type="button"
                           onClick={() => setQuiz({ ...quiz, goal: v })}
                           className={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
-                            quiz.goal === v ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 hover:bg-gray-50"
+                            quiz.goal === v
+                              ? "border-gray-900 bg-gray-900 text-white"
+                              : "border-gray-200 hover:bg-gray-50"
                           }`}
                         >
                           <span className="mr-2 text-xl align-middle">✅</span>
@@ -858,7 +894,9 @@ function goHomeFromQuiz() {
                           type="button"
                           onClick={() => setQuiz({ ...quiz, schedule: v })}
                           className={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
-                            quiz.schedule === v ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 hover:bg-gray-50"
+                            quiz.schedule === v
+                              ? "border-gray-900 bg-gray-900 text-white"
+                              : "border-gray-200 hover:bg-gray-50"
                           }`}
                         >
                           <span className="mr-2 text-xl align-middle">✅</span>
@@ -876,24 +914,23 @@ function goHomeFromQuiz() {
                       3) Какой опыт тренировок? <span className="text-xl">🏋️‍♀️</span>
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
-                      {[
-                        "Новичок",
-                        "Тренировалась раньше, был перерыв",
-                        "Занимаюсь регулярно",
-                        "Есть ограничения/травмы",
-                      ].map((v) => (
-                        <button
-                          key={v}
-                          type="button"
-                          onClick={() => setQuiz({ ...quiz, level: v })}
-                          className={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
-                            quiz.level === v ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 hover:bg-gray-50"
-                          }`}
-                        >
-                          <span className="mr-2 text-xl align-middle">✅</span>
-                          {v}
-                        </button>
-                      ))}
+                      {["Новичок", "Тренировалась раньше, был перерыв", "Занимаюсь регулярно", "Есть ограничения/травмы"].map(
+                        (v) => (
+                          <button
+                            key={v}
+                            type="button"
+                            onClick={() => setQuiz({ ...quiz, level: v })}
+                            className={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
+                              quiz.level === v
+                                ? "border-gray-900 bg-gray-900 text-white"
+                                : "border-gray-200 hover:bg-gray-50"
+                            }`}
+                          >
+                            <span className="mr-2 text-xl align-middle">✅</span>
+                            {v}
+                          </button>
+                        )
+                      )}
                     </div>
 
                     <label className="block pt-3">
@@ -929,6 +966,7 @@ function goHomeFromQuiz() {
                         onChange={(e) => setQuiz({ ...quiz, phone: e.target.value })}
                         className="mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-gray-400"
                         placeholder="+7 ___ ___ __ __"
+                        inputMode="tel"
                       />
                     </label>
 
@@ -980,12 +1018,21 @@ function goHomeFromQuiz() {
                       Далее
                     </button>
                   ) : (
-                    <a
-                      href={`tel:${PHONE_TEL}`}
-                      className="rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50"
-                    >
-                      Или позвонить
-                    </a>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={goHomeFromQuiz}
+                        className="rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50"
+                      >
+                        Закрыть
+                      </button>
+                      <a
+                        href={`tel:${PHONE_TEL}`}
+                        className="rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50"
+                      >
+                        Или позвонить
+                      </a>
+                    </div>
                   )}
                 </div>
               </form>
