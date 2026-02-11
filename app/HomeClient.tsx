@@ -222,7 +222,7 @@ export default function HomeClient() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
           <a href="#top" className="flex items-center gap-3">
             <Image
-              src="/logo.png"
+              src="/logo.webp"
               alt="Fit N Go"
               width={240}
               height={80}
@@ -280,7 +280,14 @@ export default function HomeClient() {
       {/* Hero */}
       <section id="top" className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <Image src="/images/hero.webp" alt="EMS Fit N Go" fill priority className="object-cover" />
+         <Image
+  src="/images/hero.webp"
+  alt="EMS Fit N Go"
+  fill
+  className="object-cover"
+  loading="lazy"
+   sizes="100vw"
+/>
           <div className="absolute inset-0 bg-gradient-to-b from-white/92 via-white/70 to-white" />
         </div>
 
