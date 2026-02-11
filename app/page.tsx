@@ -275,7 +275,7 @@ export default function Page() {
       {/* Hero */}
       <section id="top" className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <Image src="/images/hero.jpg" alt="EMS Fit N Go" fill priority className="object-cover" />
+          <Image src="/images/hero.webp" alt="EMS Fit N Go" fill priority className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-white/92 via-white/70 to-white" />
         </div>
 
@@ -386,7 +386,7 @@ export default function Page() {
           </div>
 
           <div className="relative aspect-[16/10] overflow-hidden rounded-3xl shadow-soft">
-            <Image src="/images/infographic-20min.png" alt="Инфографика 20 минут" fill className="object-cover" />
+            <Image src="/images/infographic-20min.webp" alt="Инфографика 20 минут" fill className="object-cover" />
           </div>
         </div>
       </section>
@@ -462,10 +462,10 @@ export default function Page() {
             className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4"
           >
             {[
-              { t: "Консультация с тренером", d: "Уточняем цель, ограничения, составляем план.", icon: "🗣️", img: "/images/process-1.png" },
-              { t: "Анализ и замеры текущего состояния", d: "Фиксируем старт и динамику.", icon: "📏", img: "/images/process-2.png" },
-              { t: "Персональная тренировка", d: "Интенсивно, но под твой уровень.", icon: "⚡", img: "/images/process-3.png" },
-              { t: "Лимфодренаж", d: "Провдим массаж + рекомендации по питанию.", icon: "💆‍♀️", img: "/images/process-4.png" },
+              { t: "Консультация с тренером", d: "Уточняем цель, ограничения, составляем план.", icon: "🗣️", img: "/images/process-1.webp" },
+              { t: "Анализ и замеры текущего состояния", d: "Фиксируем старт и динамику.", icon: "📏", img: "/images/process-2.webp" },
+              { t: "Персональная тренировка", d: "Интенсивно, но под твой уровень.", icon: "⚡", img: "/images/process-3.webp" },
+              { t: "Лимфодренаж", d: "Провдим массаж + рекомендации по питанию.", icon: "💆‍♀️", img: "/images/process-4.webp" },
             ].map((s, idx) => (
               <motion.li key={s.t} variants={item} className="card overflow-hidden">
                 <div className="flex items-center justify-between gap-3">
@@ -583,10 +583,10 @@ export default function Page() {
             className="mt-10 grid gap-5 lg:grid-cols-3"
           >
             <motion.div variants={item} className="relative h-64 overflow-hidden rounded-3xl shadow-soft lg:col-span-2 lg:h-80">
-              <Image src="/images/studio-1.jpg" alt="Студия Fit N Go" fill className="object-cover" />
+              <Image src="/images/studio-1.webp" alt="Студия Fit N Go" fill className="object-cover" />
             </motion.div>
             <motion.div variants={item} className="relative h-64 overflow-hidden rounded-3xl shadow-soft lg:h-80">
-              <Image src="/images/studio-2.jpg" alt="Комфорт Fit N Go" fill className="object-cover" />
+              <Image src="/images/studio-2.webp" alt="Комфорт Fit N Go" fill className="object-cover" />
             </motion.div>
           </motion.div>
 
