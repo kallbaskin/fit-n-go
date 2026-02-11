@@ -77,6 +77,11 @@ function StatCard({
 }
 
 export default function HomeClient() {
+  useEffect(() => {
+  window.addEventListener("error", (e) => alert("JS error: " + (e as any).message));
+  window.addEventListener("unhandledrejection", (e: any) => alert("Promise error: " + e.reason));
+}, []);
+
   // основная форма
   const [form, setForm] = useState({ name: "", phone: "", message: "", company: "" }); // company = honeypot
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
@@ -281,7 +286,7 @@ export default function HomeClient() {
 
         <motion.div
           variants={container}
-          initial="hidden"
+          initial="false"
           animate="show"
           className="mx-auto max-w-6xl px-4 pb-14 pt-10 md:px-6 md:pb-20 md:pt-16"
         >
